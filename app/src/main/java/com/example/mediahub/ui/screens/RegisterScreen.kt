@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,6 +35,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -45,12 +48,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mediahub.navigation.Screen
 import com.example.mediahub.ui.theme.MediaHubTheme
+import com.example.mediahub.viewmodel.AuthState
+import com.example.mediahub.viewmodel.AuthViewModel
+
 @Composable
-fun RegisterScreen(navController: NavController){
+fun RegisterScreen(navController: NavController,
+                   authViewModel: AuthViewModel =
+                       viewModel()){
     // data for the register screen i.e. state
     var fullname by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -61,6 +70,23 @@ fun RegisterScreen(navController: NavController){
     var selectedRole by remember {
         mutableStateOf("Student") }
     var roles = listOf("Student","Teacher")
+    // auth view model references
+    val authState by authViewModel.authState.collectAsState()
+    val isLoading = authState is AuthState.Loading
+    val errorMessage = (authState as? AuthState.Error)?.message
+
+    // when a user registers successfully take to the
+    // dashboard 
+    LaunchedEffect(authState
+    ) {
+        if(authState is AuthState.Success){
+             navController.navigate(Screen.Dashboard.route){
+                 popUpTo(Screen.Register.route) {inclusive = true}
+             }
+        }
+    }
+
+
     Box(modifier = Modifier.fillMaxSize().background(
         MaterialTheme.colorScheme.background
         )
@@ -188,12 +214,36 @@ fun RegisterScreen(navController: NavController){
             }
            Spacer(Modifier.height(28.dp))
             // Register Button
-            Button(
-                onClick={},
-                modifier=Modifier.fillMaxWidth().height(52.dp),
-                shape = RoundedCornerShape(12.dp)
-            ){  Text("Create Account",
-                style = MaterialTheme.typography.bodyLarge)}
+Button(
+    onClick = {
+        if(password == confirmPassword){
+            authViewModel.register(fullname,email,password,
+                selectedRole)
+        }
+    },
+    modifier= Modifier.fillMaxWidth().height(52.dp),
+    shape=RoundedCornerShape(12.dp),
+    enabled= fullname.isNotBlank() && email.isNotBlank()
+            && password.isNotBlank() &&
+            password == confirmPassword && !isLoading
+) {
+    if(isLoading){
+        CircularProgressIndicator(
+            modifier = Modifier.size(20.dp),
+            color = MaterialTheme.colorScheme.onPrimary,
+            strokeWidth = 2.dp
+        )
+    } else {
+      Text("Create Account",style=MaterialTheme.typography
+          .bodyLarge)
+    }
+}
+//            Button(
+//                onClick={},
+//                modifier=Modifier.fillMaxWidth().height(52.dp),
+//                shape = RoundedCornerShape(12.dp)
+//            ){  Text("Create Account",
+//                style = MaterialTheme.typography.bodyLarge)}
             Spacer(Modifier.height(16.dp))
             // to link to the register screen
             TextButton(
