@@ -69,9 +69,9 @@ fun ForgotPasswordScreen(navController: NavController,
     val errorMessage = (authState as? AuthState.Error)?.message
 
     // clean up the states when vacating this screen
-//    DisposableEffect(Unit) {
-//        onDispose { authViewModel.clearState() }
-//    }
+    DisposableEffect(Unit) {
+        onDispose { authViewModel.clearState() }
+    }
     // this will reference whether a reset password email
     // has been sent to the user or not
     var sent by remember { mutableStateOf(false) }

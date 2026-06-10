@@ -38,7 +38,18 @@
    its business logic . Designed to prepare , manage and hold UI
    related data so that the screen survives rotation and config
    changes
-3. Connect the viemodel functionalities to the interfaces 
+3. Connect the viemodel functionalities to the interfaces
+
+### CRUD IMPLEMENTATION 
+- Ensure firestore is enabled in firebase console 
+- Set up the model class for the collection upload
+
+### Media Processing (images,videos and docs)
+- use of cloudinary : add dependency to build.gradle
+- make an application class for access to the service 
+- register the class in android manifest
+- config cloudinary : set an upload preset in cloudinary 
+- set up helper function to upload files to cloudinary storage
 
 
 

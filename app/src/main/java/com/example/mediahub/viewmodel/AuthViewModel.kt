@@ -156,6 +156,10 @@ _authState.value = AuthState.Error(
         _currentProfile.value = null
         _authState.value = AuthState.Logout
     }
+    // clear states
+    fun clearState(){
+        _authState.value = AuthState.Idle
+    }
 }
 
 
