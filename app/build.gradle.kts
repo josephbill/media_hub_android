@@ -76,6 +76,8 @@ dependencies {
     implementation(
         "org.jetbrains.kotlinx:kotlinx-coroutines-" +
                 "play-services:1.8.0")
+    // cloudinary
+    implementation("com.cloudinary:cloudinary-android:2.3.1")
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
