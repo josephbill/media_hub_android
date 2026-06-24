@@ -69,7 +69,7 @@ class MediaVIewModel : ViewModel(){
 // order our data by the latest i.e. UploadedAt field
 val snapshot = db.collection("media")
     .whereEqualTo("isPublic", true)
-    .orderBy("UploadedAt",
+    .orderBy("uploadedAt",
         Query.Direction.DESCENDING).get().await()
 //now populate the viewmodel reference for public media
 // via capturing the snapshot and mapping each record in the
@@ -93,7 +93,7 @@ _publicMedia.value = snapshot.documents.map{ doc ->
      try{
          val snapshot=db.collection("media")
              .whereEqualTo("ownerId", uid)
-             .orderBy("UploadedAt",
+             .orderBy("uploadedAt",
                  Query.Direction.DESCENDING).get()
              .await()
  _myMedia.value = snapshot.documents.map{doc ->
@@ -113,7 +113,7 @@ _publicMedia.value = snapshot.documents.map{ doc ->
         viewModelScope.launch {
             try{
                 val snapshot=db.collection("media")
-                    .orderBy("UploadedAt",
+                    .orderBy("uploadedAt",
                         Query.Direction.DESCENDING).get()
                     .await()
                 _allMedia.value = snapshot.documents.map{doc ->

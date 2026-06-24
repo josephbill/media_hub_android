@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +16,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+// dynamically list content in android apps
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyColumn
+
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
@@ -39,6 +43,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -76,10 +81,21 @@ fun DashboardScreen(navController: NavController,
     val authState by authViewModel.authState.collectAsState()
      val profile by authViewModel.currentProfile.collectAsState()
       val isTeacher = profile?.userRole() == UserRole.TEACHER
+// call the methods for the firestore fetch
+    LaunchedEffect(profile) {
+        if(profile != null){
+            mediaViewModel.loadPublicMedia()
+            mediaViewModel.loadMyMedia()
+            if(isTeacher) mediaViewModel.loadAllMedia()
+        }
+    }
     // firestore firebase references
 val publicMedia by mediaViewModel.publicMedia.collectAsState()
 val myMedia  by mediaViewModel.myMedia.collectAsState()
 val allMedia by mediaViewModel.allMedia.collectAsState()
+    val mediaState by mediaViewModel.mediaState.collectAsState()
+
+
  // filtering for assets
  var selectedTab by remember { mutableStateOf(0) }
     // initial state of our drawer
@@ -152,6 +168,7 @@ onLogoutClick ={
 Column(
 modifier=Modifier.fillMaxSize().padding(padding)
 ) {
+
     // Role badge .
     Row(
 modifier=Modifier.fillMaxWidth()
@@ -172,6 +189,9 @@ style=MaterialTheme.typography.labelSmall,
 color= MaterialTheme.colorScheme.primary
          )
     }
+
+
+
 //tabs
     TabRow(
         selectedTabIndex = selectedTab,
