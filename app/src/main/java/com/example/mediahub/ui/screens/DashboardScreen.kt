@@ -253,13 +253,31 @@ colors= CardDefaults.cardColors(
 modifier=Modifier.fillMaxWidth().padding(12.dp),
 verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = item.imageUrl,
-                contentDescription = item.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.size(72.dp)
-                    .clip(RoundedCornerShape(12.dp))
-            )
+            // thumbnail or placeholder depending on
+            // category
+            if(item.category == "Image"){
+                AsyncImage(
+                    model = item.imageUrl,
+                    contentDescription = item.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.size(72.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                )
+            } else {
+Box(contentAlignment = Alignment.Center,
+    modifier=Modifier.size(72.dp).clip(
+        RoundedCornerShape(12.dp)
+    )){
+    Icon(
+        Icons.Default.Category,
+        contentDescription = item.category,
+        tint= MaterialTheme.colorScheme.primary,
+        modifier = Modifier.size(32.dp)
+    )
+}
+
+            }
+
             Spacer(Modifier.width(12.dp))
             Column(modifier=Modifier.weight(1f)){
                 Text(
